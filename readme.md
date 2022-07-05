@@ -1576,9 +1576,13 @@ Este codigo de arriba ya fue explicado en los inicios del curso, Pero basicamane
     ~~~
     Colocamos web luego el servidor en este caso uvicorn, luego el main donde esta la app, seguido el host 0.0.0.0 que quiere decir que se pueden recibir peticiones de cualquier lugar, seguido le pasamos el puerto pero como heroku le envia el mismo en forma de variable de entorno entonces la tenemos que poner como tal en el apartado de port
     
-    web: uvicorn main:app --host:0.0.0.0 --port=${POST:-5000}
+    web: uvicorn main:app --host=0.0.0.0 --port=${POST:-5000}
 
     Esta linea de aca arriba es lo mismo que haciamos en el main con el if __name__ ... etc
 
     ~~~
 7) Seguido a esto guardamos todo y hacemos add ., commit, y push a github
+8) Estando logueado en la aplicacion, luego nos vamos al navegador entramos a heroku luego a nuestro proyecto ya creado y copiamos el nombre de la aplicacion 
+9) Ejecutamos lluego el comando heroku git:remote -a nombre-aplicacion-heroku
+10) Seguidamente hay que hacer un push, git push heroku main. Esto lo que hace es primero instalar todo lo que tiene que ver con el rquirement, luego de esto levanta toda la aplicacion, y al finalizar todas las intalaciones de los requerimientos de la app nos da la url de la app
+Nota: Si algo sucede y quisieramos ver los logs colocamos el comando heroku logs --tail
