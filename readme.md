@@ -1484,6 +1484,7 @@ Ahora asi de esta manera nosotros hemos cubierto mas del 95% de las pruebas de c
     ENV/
     env.bak/
     venv.bak/
+    entorno/
 
     # Spyder project settings
     .spyderproject
@@ -1516,5 +1517,47 @@ Ahora asi de esta manera nosotros hemos cubierto mas del 95% de las pruebas de c
     #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
     #.idea/
     ~~~
-2) Ahora lo siguiente es iniciar git con el comando git init, 
+2) Ahora lo siguiente es iniciar git con el comando git init, seguido hascemos git add ., y a continuacion git commit -m "repositorio en git", a continuacion creamos un repo en hithub agregamos el git remote en el proyecto y hacemos push para subir todo a la nube
 
+## Creamos base de datos en heroku psotgresql
+
+1) Nos vamos a heroku verificamos que tengamos la cuanta si no la tenemos la creamos, luego inicamos sesion, verificamos que tengamos menos de 5 proyectos si no nos dejara crear mas, y finalmente creamos nueva app, le colocamos un nombre que no haya sido usado
+2) Luego nos vamos a resourse y despues en la barra de busqueda poenmos heroku postgresql y la selseleccionamos, luego nos aparece una ventana seleccionamos el plan free y submit order para finalizar
+3) Seguidamente debemos ver las credenciales de esta base de datos para usarlas en nuestra aplicacion, para esto le damos click a la aplicacion, una vez que se abre la ventana de la base de datos nos vamos a la pestaña de settings y luego ponemos en view en database credentials y aca vamos a tener algo como lo siguiente
+   ~~~
+        Host
+        ec2-44-198-82-71.compute-1.amazonaws.com
+        Database
+        d3rvasl9224c30
+        User
+        qcrlviipwolmfv
+        Port
+        5432
+        Password
+        69013571b34f1be101ceec171ace4b5b33cf10425517f4f97b2d0c1287341e53
+        URI
+        postgres://qcrlviipwolmfv:69013571b34f1be101ceec171ace4b5b33cf10425517f4f97b2d0c1287341e53@ec2-44-198-82-71.compute-1.amazonaws.com:5432/d3rvasl9224c30
+        Heroku CLI
+        heroku pg:psql postgresql-polished-53757 --app fast-api-proyecto-udemy
+    ~~~
+4)  Luego de todo esto lo proximo es hacer la prueba de la base de datos con el gestor local para ver si esta funcionando para eso abrimos dbeaver y creamos una nueva conexion pasando los parametros antes vistos
+5) Eliminamos la carpeta migrations y el archivo alembic.ini
+6) Nos vamos al archivo .env y dentro de este comentamos las varaibles de entorno que tenemos y las copiamos a las comentadas le ponemos variables de entorno base de datos local y luego a las otras le colcoamos base de datos en heroku. A estas ultimas le ponemos las credenciales con los valores de heroku
+7) Luego del paso anterior debemos realizar nuevamente las migraciones con el comando alembic init migrations por eso eliminamos los archivos de alembic.ini y la carpeta de migrations ya que ahora se deberan crear con los nuevos datos de las variables de entorno. Nota: Recordar tener siempre activado el entorno virtual venv/Sripts/avtivate
+8) Nos vamos a alembic.ini y modificamos la linea de sqlalchemy.url dejandola vacia
+9) Luego debemos copiar el siguiente codigo antes de la funcion run_migrations_offline
+    ~~~
+    from core.config import settings
+
+    config = context.config
+    config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
+
+    if config.config_file_name is not None:
+        fileConfig(config.config_file_name)
+
+    from app.db.models import Base
+    target_metadata = Base.metadata
+    ~~~
+Este codigo de arriba ya fue explicado en los inicios del curso, Pero basicamanete loq ue hace es ir a core setting y traer todas las settings y con el database url nos busca en el alembic ini y colocarle la database_url y por ultimo lo que hara es crear todos los modelos de las tablas
+
+10) Luego ejecutamos las migraciones con los comandos alembic revision --autogenerate -m "crear modelos", y luego ejecutamos otro comando alembic upgrade heads
