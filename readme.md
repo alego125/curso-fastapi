@@ -1560,4 +1560,25 @@ Ahora asi de esta manera nosotros hemos cubierto mas del 95% de las pruebas de c
     ~~~
 Este codigo de arriba ya fue explicado en los inicios del curso, Pero basicamanete loq ue hace es ir a core setting y traer todas las settings y con el database url nos busca en el alembic ini y colocarle la database_url y por ultimo lo que hara es crear todos los modelos de las tablas
 
-10) Luego ejecutamos las migraciones con los comandos alembic revision --autogenerate -m "crear modelos", y luego ejecutamos otro comando alembic upgrade heads
+10) Luego ejecutamos las migraciones con los comandos alembic revision --autogenerate -m "crear modelos", y luego ejecutamos otro comando alembic upgrade heads. Para finalizar hacemos add, commit y push del proyecto en github
+
+## Despliegue de la app en heroku
+1) Descargamos heroku CLI
+2) probamos si tenemos heroku con el comando heroku en la terminal, nos tiene que aparecer un listado de acciones a realizar eso queire decir que lo tenemos instalado
+3) Ejecutamos el comando heroku login, presionamos cualquier tecla menos la q y se nos abre el navegador para iniciar sesion en heroku luego cerramos y ya estamos dentro
+4) Creamos un archivo Procfile, este es un archivo que interpreta heroku
+5) Comentamos las lineas siguientes en el main.py 
+   ~~~
+   if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, reload=True)
+   ~~~
+6) Seguidamente en el Proc file colocamos las siguientes lineas
+    ~~~
+    Colocamos web luego el servidor en este caso uvicorn, luego el main donde esta la app, seguido el host 0.0.0.0 que quiere decir que se pueden recibir peticiones de cualquier lugar, seguido le pasamos el puerto pero como heroku le envia el mismo en forma de variable de entorno entonces la tenemos que poner como tal en el apartado de port
+    
+    web: uvicorn main:app --host:0.0.0.0 --port=${POST:-5000}
+
+    Esta linea de aca arriba es lo mismo que haciamos en el main con el if __name__ ... etc
+
+    ~~~
+7) Seguido a esto guardamos todo y hacemos add ., commit, y push a github
